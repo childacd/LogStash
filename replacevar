@@ -1,0 +1,33 @@
+import re
+import glob
+import os
+
+def read_variables_from_shell(file_path):
+    variables = {}
+    with open(file_path, 'r') as file:
+        for line in file:
+            match = re.match(r'sendevent -E SET_GLOBAL -G (\w+)=(\w+)', line.strip())
+            if match:
+                variable_name, variable_value = match.groups()
+                variables[variable_name] = variable_value
+    return variables
+
+def replace_global_variables_in_jil(file_path, variables):
+    with open(file_path, 'r') as file:
+        jil_content = file.read()
+    for var_name, var_value in variables.items():
+        jil_content = jil_content.replace(f'${{{var_name}}}', var_value)
+    return jil_content
+
+if __name__ == "__main__":
+    current_folder = os.getcwd()
+    shell_file_paths = glob.glob(os.path.join(current_folder, '*variables.sh'))
+
+    for shell_file_path in shell_file_paths:
+        variables = read_variables_from_shell(shell_file_path)
+        jil_file_path = os.path.join(current_folder, 'example.jil')  # 您需要指定 JIL 文件的路径
+        updated_jil_content = replace_global_variables_in_jil(jil_file_path, variables)
+
+        updated_jil_file_path = os.path.join(current_folder, f'updated_{os.path.basename(jil_file_path)}')
+        with open(updated_jil_file_path, 'w') as file:
+            file.write(updated_jil_content)
