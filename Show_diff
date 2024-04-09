@@ -1,0 +1,21 @@
+import difflib
+
+def find_string_diff(a, b):
+    # 使用 difflib 库找出两个字符串的差异
+    differ = difflib.ndiff(a.split(), b.split())
+    
+    # 找出具体的变化
+    changes = []
+    for diff in differ:
+        if diff.startswith('+') or diff.startswith('-'):
+            changes.append(diff[2:])
+
+    return changes
+
+# 示例字符串
+a = "you can check recipes with Tom"
+b = "you can check recipes with jack"
+
+# 找出变化
+diff = find_string_diff(a, b)
+print(diff)  # 输出 ['Tom', '->', 'jack']
