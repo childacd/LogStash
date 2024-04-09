@@ -1,0 +1,33 @@
+import os
+
+def find_matching_folder(new_folder_path, legacy_folders_path):
+    for filename in os.listdir(new_folder_path):
+        if filename.endswith("_Box.jil"):
+            # Extracting legal_entity and vm_name from filename
+            parts = filename.split("_")
+            legal_entity = parts[0][3:]
+            vm_name = parts[1][:6]
+
+            # Finding matching folder in legacy_folders_path
+            matching_folder = os.path.join(legacy_folders_path, f"{legal_entity}{vm_name}")
+            if os.path.isdir(matching_folder):
+                # Iterating through files in the matching folder
+                for legacy_filename in os.listdir(matching_folder):
+                    if legacy_filename.endswith(".jil") and "ALL" in legacy_filename and "_del" not in legacy_filename:
+                        # Calling test() function with current filename and legacy filename
+                        test(os.path.join(new_folder_path, filename), os.path.join(matching_folder, legacy_filename))
+
+# Extracting legal_entity and vm_name from filename
+#legal_entity = filename[3:filename.index("FVM")]
+#vm_name = filename[filename.index("FVM"):filename.index("_Box.jil")]
+
+
+
+def test(new_file_path, legacy_file_path):
+    # Your test logic here
+    print(f"New file: {new_file_path}, Legacy file: {legacy_file_path}")
+
+# Example usage
+new_folder_path = "/path/to/new_folder"
+legacy_folders_path = "/path/to/legacy_folders"
+find_matching_folder(new_folder_path, legacy_folders_path)
