@@ -1,0 +1,345 @@
+content = """Cloud Code Prompt: Generate a Confluence Page
+
+Please help generate a Confluence page to track the status of an S3 bucket cleanup / cost saving development task.
+
+Please write the document in English. Keep the structure clear and suitable for project status tracking. Do not over-expand the content. Please only organize the information provided below into a clear Confluence page.
+
+
+Title: S3 Bucket Cleanup Automation Status Tracking
+
+
+1. Background
+
+We have different S3 buckets for different scenarios:
+
+- Production
+- Stress testing
+- Back testing
+
+For each scenario, batch jobs generate different folders and files under the corresponding bucket. The generated files can have different sizes, but they are usually large.
+
+To save storage cost, we need to periodically clean up data from these buckets.
+
+The cleanup requirements are different for different buckets and paths. Each scenario may have its own deletion paths and rules.
+
+
+2. Current Situation
+
+Currently, we already have a Jenkins job for the cleanup.
+
+Current behavior:
+
+- The Jenkins job is manually triggered.
+- The job can take a specified S3 prefix as input.
+- The job deletes data under the specified prefix.
+- Sometimes the job finishes by itself.
+- Sometimes we manually stop the job.
+- The cleanup logic is currently inside the Jenkins pipeline.
+- Since the pipeline runs outside the AWS environment and does not have explicit AWS credentials, the Jenkins pipeline SSHs to an AWS jump host to perform the actual cleanup operation.
+
+Current flow:
+
+Manual Jenkins Trigger
+-> Jenkins Pipeline
+-> SSH to AWS Jump Host
+-> Run cleanup operation
+-> Delete data under specified prefix
+
+
+3. Project Goal
+
+The goal is to schedule the cleanup process instead of manually triggering it.
+
+We need to track the design and implementation status for the following areas:
+
+- How to make the existing cleanup script standalone.
+- How to schedule the cleanup start.
+- How to schedule or control the cleanup stop.
+- How to support different deletion rules for different paths.
+- Which trigger mechanism should be used.
+- How to check and view logs.
+
+
+4. Known Cleanup Requirements
+
+4.1 Different Buckets
+
+The cleanup needs to cover three scenarios:
+
+Scenario: Production
+Notes: Has its own cleanup paths and rules
+
+Scenario: Stress testing
+Notes: Has its own cleanup paths and rules
+
+Scenario: Back testing
+Notes: Has its own cleanup paths and rules
+
+
+4.2 Back Testing Example
+
+For the back testing bucket:
+
+- Back testing may run monthly or quarterly.
+- After the run is completed, some paths may be ready for deletion.
+- Some paths may need special retention logic.
+
+Example retention logic mentioned:
+
+- Keep daily data within the latest 18 months.
+- For data older than 18 months, only keep month-end data.
+- Delete the other data older than 18 months.
+- The data is partitioned by month as subfolders.
+
+This rule still needs to be confirmed and detailed.
+
+
+5. Areas That Need Customization
+
+There are several places where the design needs to support customization.
+
+
+5.1 Cleanup Filter Logic
+
+For a given prefix, there may be different cleanup behaviors.
+
+Possible cases:
+
+1. Delete everything under the specified prefix.
+2. Apply custom filter logic under the prefix before deletion.
+
+Example custom filter logic:
+
+- Keep data within 18 months.
+- For older data, keep only month-end data.
+- Delete the rest.
+
+The cleanup script may need to expose a hook or extension point for different filter logic.
+
+Status: To be discussed.
+
+
+5.2 Start Condition
+
+The cleanup may be scheduled to start on Saturday.
+
+Before starting the deletion, we may need to confirm some prerequisites.
+
+Examples:
+
+- Required prefixes are ready.
+- Required conditions are met before cleanup starts.
+
+The exact prerequisite checks are not finalized yet.
+
+Status: To be discussed.
+
+
+5.3 Stop Condition
+
+The cleanup is expected to end on Sunday.
+
+Need to decide how the job should stop.
+
+Open points:
+
+- Should the job stop automatically on Sunday?
+- Should it be manually stopped?
+- What should happen if the deletion has not finished by then?
+
+Status: To be discussed.
+
+
+5.4 Trigger Mechanism
+
+The future trigger mechanism has not been decided yet.
+
+Possible options mentioned:
+
+- AWS trigger
+- Jenkins cron trigger
+- Prefect trigger
+
+Before the trigger mechanism is finalized, the first step can be to separate the cleanup script from the Jenkins pipeline and make it standalone.
+
+Status: Not decided.
+
+
+5.5 Logs
+
+Need to decide how to check the cleanup logs.
+
+Open points:
+
+- Where should the logs be available?
+- How should we check the cleanup progress?
+- How should we check the final cleanup result?
+
+Status: To be discussed.
+
+
+6. Proposed First Step
+
+The first step is to separate the existing cleanup script from the current Jenkins pipeline.
+
+Goal:
+
+- Make the cleanup logic standalone.
+- Keep the script independent from the trigger mechanism.
+- Allow the script to be triggered later by Jenkins, AWS, Prefect, or other scheduler options.
+
+Status: To be started.
+
+
+7. Open Questions
+
+Area: Cleanup rules
+Question: What are the exact deletion paths and rules for production?
+Status: Open
+Notes:
+
+Area: Cleanup rules
+Question: What are the exact deletion paths and rules for stress testing?
+Status: Open
+Notes:
+
+Area: Cleanup rules
+Question: What are the exact deletion paths and rules for back testing?
+Status: Open
+Notes:
+
+Area: Back testing
+Question: Is the 18-month daily retention and month-end retention rule confirmed?
+Status: Open
+Notes:
+
+Area: Filter logic
+Question: Do we need a hook or extension point for custom filter logic?
+Status: Open
+Notes:
+
+Area: Start condition
+Question: What prerequisites should be checked before starting cleanup?
+Status: Open
+Notes:
+
+Area: Stop condition
+Question: How should the cleanup stop on Sunday?
+Status: Open
+Notes:
+
+Area: Trigger
+Question: Should we use AWS trigger, Jenkins cron, or Prefect?
+Status: Open
+Notes:
+
+Area: Logs
+Question: Where and how should we check cleanup logs?
+Status: Open
+Notes:
+
+
+8. Task Tracking
+
+Step 1
+Task: Review current Jenkins cleanup pipeline
+Status: Not Started
+Notes: Understand current implementation
+
+Step 2
+Task: Separate cleanup script from Jenkins pipeline
+Status: Not Started
+Notes: First implementation step
+
+Step 3
+Task: Make cleanup script standalone
+Status: Not Started
+Notes: Should not depend on Jenkins trigger
+
+Step 4
+Task: Define cleanup rules for production bucket
+Status: Not Started
+Notes: Needs confirmation
+
+Step 5
+Task: Define cleanup rules for stress testing bucket
+Status: Not Started
+Notes: Needs confirmation
+
+Step 6
+Task: Define cleanup rules for back testing bucket
+Status: Not Started
+Notes: Includes retention logic discussion
+
+Step 7
+Task: Define custom filter logic approach
+Status: Not Started
+Notes: Need to decide hook/extension point
+
+Step 8
+Task: Define Saturday start condition
+Status: Not Started
+Notes: Need prerequisite checks
+
+Step 9
+Task: Define Sunday stop condition
+Status: Not Started
+Notes: Need stop behavior
+
+Step 10
+Task: Decide trigger mechanism
+Status: Not Started
+Notes: AWS / Jenkins cron / Prefect
+
+Step 11
+Task: Decide logging approach
+Status: Not Started
+Notes: Need log checking method
+
+
+9. Current Status Summary
+
+Item: Manual Jenkins cleanup job
+Status: Existing
+
+Item: Standalone cleanup script
+Status: Not started
+
+Item: Scheduled cleanup
+Status: Not started
+
+Item: Production cleanup rules
+Status: Not finalized
+
+Item: Stress testing cleanup rules
+Status: Not finalized
+
+Item: Back testing cleanup rules
+Status: Partially discussed
+
+Item: Custom filter logic
+Status: To be discussed
+
+Item: Start condition
+Status: To be discussed
+
+Item: Stop condition
+Status: To be discussed
+
+Item: Trigger mechanism
+Status: Not decided
+
+Item: Logging approach
+Status: Not decided
+
+
+Additional instruction for Cloud Code:
+
+Please keep the page close to the provided information. Do not add additional technical design details unless they are explicitly mentioned above.
+"""
+
+path = "/mnt/data/s3_bucket_cleanup_confluence_prompt.txt"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(content)
+
+path
