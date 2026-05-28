@@ -1,0 +1,124 @@
+⸻
+
+4.2 Back Testing Example
+
+For the back testing bucket:
+
+* Back testing may run monthly or quarterly.
+* After the run is completed, some paths may be ready for deletion.
+* Some paths may need special retention logic.
+
+Example retention logic mentioned:
+
+* Keep daily data within the latest 18 months.
+* For data older than 18 months, only keep month-end data.
+* Delete the other data older than 18 months.
+* The data is partitioned by month as subfolders.
+
+This rule still needs to be confirmed and detailed.
+
+⸻
+
+5. Areas That Need Customization
+
+There are several places where the design needs to support customization.
+
+5.1 Cleanup Filter Logic
+
+For a given prefix, there may be different cleanup behaviors.
+
+Possible cases:
+
+1. Delete everything under the specified prefix.
+2. Apply custom filter logic under the prefix before deletion.
+
+Example custom filter logic:
+
+* Keep data within 18 months.
+* For older data, keep only month-end data.
+* Delete the rest.
+
+The cleanup script may need to expose a hook or extension point for different filter logic.
+
+Status: To be discussed.
+
+⸻
+
+5.2 Start Condition
+
+The cleanup may be scheduled to start on Saturday.
+
+Before starting the deletion, we may need to confirm some prerequisites.
+
+Examples:
+
+* Required prefixes are ready.
+* Required conditions are met before cleanup starts.
+
+The exact prerequisite checks are not finalized yet.
+
+Status: To be discussed.
+
+⸻
+
+5.3 Stop Condition
+
+The cleanup is expected to end on Sunday.
+
+Need to decide how the job should stop.
+
+Open points:
+
+* Should the job stop automatically on Sunday?
+* Should it be manually stopped?
+* What should happen if the deletion has not finished by then?
+
+Status: To be discussed.
+
+⸻
+
+5.4 Trigger Mechanism
+
+The future trigger mechanism has not been decided yet.
+
+Possible options mentioned:
+
+* AWS trigger
+* Jenkins cron trigger
+* Prefect trigger
+
+Before the trigger mechanism is finalized, the first step can be to separate the cleanup script from the Jenkins pipeline and make it standalone.
+
+Status: Not decided.
+
+⸻
+
+5.5 Logs
+
+Need to decide how to check the cleanup logs.
+
+Open points:
+
+* Where should the logs be available?
+* How should we check the cleanup progress?
+* How should we check the final cleanup result?
+
+Status: To be discussed.
+
+⸻
+
+6. Proposed First Step
+
+The first step is to separate the existing cleanup script from the current Jenkins pipeline.
+
+Goal:
+
+* Make the cleanup logic standalone.
+* Keep the script independent from the trigger mechanism.
+* Allow the script to be triggered later by Jenkins, AWS, Prefect, or other scheduler options.
+
+Status: To be started.
+
+⸻
+
+7. Open Questions
