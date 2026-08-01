@@ -1,0 +1,580 @@
+{
+
+  "annotations": {
+
+    "list": [
+
+      {
+
+        "builtIn": 1,
+
+        "datasource": {
+
+          "type": "grafana",
+
+          "uid": "-- Grafana --"
+
+        },
+
+        "enable": true,
+
+        "hide": true,
+
+        "iconColor": "rgba(0, 211, 255, 1)",
+
+        "name": "Annotations & Alerts",
+
+        "type": "dashboard"
+
+      }
+
+    ]
+
+  },
+
+  "editable": true,
+
+  "fiscalYearStartMonth": 0,
+
+  "graphTooltip": 0,
+
+  "links": [],
+
+  "panels": [
+
+    {
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "bytes"
+
+        }
+
+      },
+
+      "gridPos": {
+
+        "h": 8,
+
+        "w": 12,
+
+        "x": 0,
+
+        "y": 0
+
+      },
+
+      "id": 1,
+
+      "options": {
+
+        "legend": {
+
+          "displayMode": "list"
+
+        },
+
+        "tooltip": {
+
+          "mode": "single"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?\\\\((?P<heap_used_bytes>[0-9]+)\\\\)\" | unwrap heap_used_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "refId": "A"
+
+        }
+
+      ],
+
+      "title": "Heap Used (GiB)",
+
+      "type": "timeseries"
+
+    },
+
+    {
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "bytes"
+
+        }
+
+      },
+
+      "gridPos": {
+
+        "h": 8,
+
+        "w": 12,
+
+        "x": 12,
+
+        "y": 0
+
+      },
+
+      "id": 2,
+
+      "options": {
+
+        "legend": {
+
+          "displayMode": "list"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?max=.*?\\\\((?P<heap_max_bytes>[0-9]+)\\\\)\" | unwrap heap_max_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "refId": "A"
+
+        }
+
+      ],
+
+      "title": "Heap Max (GiB)",
+
+      "type": "timeseries"
+
+    },
+
+    {
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "gridPos": {
+
+        "h": 8,
+
+        "w": 12,
+
+        "x": 0,
+
+        "y": 8
+
+      },
+
+      "id": 3,
+
+      "options": {
+
+        "legend": {
+
+          "displayMode": "list"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "expr": "(max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?\\\\((?P<heap_used_bytes>[0-9]+)\\\\)\" | unwrap heap_used_bytes [30s]) / max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?max=.*?\\\\((?P<heap_max_bytes>[0-9]+)\\\\)\" | unwrap heap_max_bytes [30s]) * 100",
+
+          "refId": "A"
+
+        }
+
+      ],
+
+      "title": "Heap Usage %",
+
+      "type": "timeseries",
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "percent"
+
+        }
+
+      }
+
+    },
+
+    {
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "bytes"
+
+        }
+
+      },
+
+      "gridPos": {
+
+        "h": 8,
+
+        "w": 12,
+
+        "x": 12,
+
+        "y": 8
+
+      },
+
+      "id": 4,
+
+      "options": {
+
+        "legend": {
+
+          "displayMode": "list"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?\\\\((?P<direct_used_bytes>[0-9]+)\\\\)\" | unwrap direct_used_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "refId": "A"
+
+        }
+
+      ],
+
+      "title": "Direct Memory Used (GiB)",
+
+      "type": "timeseries"
+
+    }
+
+  ],
+
+  "schemaVersion": 39,
+
+  "templating": {
+
+    "list": [
+
+      {
+
+        "name": "hostname",
+
+        "type": "query",
+
+        "datasource": {
+
+          "type": "loki",
+
+          "uid": "${DS_LOKI}"
+
+        },
+
+        "query": {
+
+          "query": "label_values(hostname)"
+
+        },
+
+        "refresh": 1,
+
+        "includeAll": true,
+
+        "multi": true
+
+      }
+
+    ]
+
+  },
+
+  "time": {
+
+    "from": "now-3h",
+
+    "to": "now"
+
+  },
+
+  "title": "JVM Memory Dashboard",
+
+  "uid": "jvm-memory-dashboard",
+
+  "version": 1
+
+}
+,
+
+{
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "fieldConfig": {
+
+    "defaults": {
+
+      "unit": "percent"
+
+    }
+
+  },
+
+  "gridPos": {
+
+    "h": 8,
+
+    "w": 12,
+
+    "x": 0,
+
+    "y": 16
+
+  },
+
+  "id": 5,
+
+  "options": {
+
+    "legend": {
+
+      "displayMode": "list"
+
+    }
+
+  },
+
+  "targets": [
+
+    {
+
+      "expr": "(max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?\\\\((?P<direct_used_bytes>[0-9]+)\\\\)\" | unwrap direct_used_bytes [30s]) / max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?max=.*?\\\\((?P<direct_max_bytes>[0-9]+)\\\\)\" | unwrap direct_max_bytes [30s])) * 100",
+
+      "refId": "A"
+
+    }
+
+  ],
+
+  "title": "Direct Memory Usage %",
+
+  "type": "timeseries"
+
+},
+
+{
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "gridPos": {
+
+    "h": 8,
+
+    "w": 12,
+
+    "x": 12,
+
+    "y": 16
+
+  },
+
+  "id": 6,
+
+  "options": {
+
+    "legend": {
+
+      "displayMode": "list"
+
+    }
+
+  },
+
+  "targets": [
+
+    {
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Threads\\\\[count=(?P<thread_count>[0-9]+)\" | unwrap thread_count [30s])",
+
+      "refId": "A"
+
+    }
+
+  ],
+
+  "title": "JVM Thread Count",
+
+  "type": "timeseries"
+
+},
+
+{
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "gridPos": {
+
+    "h": 6,
+
+    "w": 12,
+
+    "x": 0,
+
+    "y": 24
+
+  },
+
+  "id": 7,
+
+  "options": {
+
+    "reduceOptions": {
+
+      "values": false,
+
+      "calcs": [
+
+        "lastNotNull"
+
+      ]
+
+    }
+
+  },
+
+  "targets": [
+
+    {
+
+      "expr": "count_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" [2m])",
+
+      "refId": "A"
+
+    }
+
+  ],
+
+  "title": "JVM Memory Report Count (Last 2m)",
+
+  "type": "stat"
+
+},
+
+{
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "gridPos": {
+
+    "h": 8,
+
+    "w": 12,
+
+    "x": 12,
+
+    "y": 24
+
+  },
+
+  "id": 8,
+
+  "options": {
+
+    "legend": {
+
+      "displayMode": "list"
+
+    }
+
+  },
+
+  "targets": [
+
+    {
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Threads\\\\[peak=(?P<thread_peak>[0-9]+)\" | unwrap thread_peak [30s])",
+
+      "refId": "A"
+
+    }
+
+  ],
+
+  "title": "JVM Peak Thread Count",
+
+  "type": "timeseries"
+
+}  ]
+
+}
