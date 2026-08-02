@@ -1,0 +1,585 @@
+{
+
+  "annotations": {
+
+    "list": [
+
+      {
+
+        "builtIn": 1,
+
+        "datasource": {
+
+          "type": "grafana",
+
+          "uid": "-- Grafana --"
+
+        },
+
+        "enable": true,
+
+        "hide": true,
+
+        "name": "Annotations & Alerts",
+
+        "type": "dashboard"
+
+      }
+
+    ]
+
+  },
+
+  "editable": true,
+
+  "graphTooltip": 1,
+
+  "panels": [
+
+    {
+
+      "id": 1,
+
+      "title": "Heap Used vs Heap Max (GiB)",
+
+      "type": "timeseries",
+
+      "gridPos": {
+
+        "x": 0,
+
+        "y": 0,
+
+        "w": 12,
+
+        "h": 8
+
+      },
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "bytes"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "refId": "A",
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?\\\\((?P<heap_used_bytes>[0-9]+)\\\\).*?max=.*?\\\\((?P<heap_max_bytes>[0-9]+)\\\\)\" | unwrap heap_used_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "legendFormat": "Heap Used"
+
+        },
+
+        {
+
+          "refId": "B",
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?max=.*?\\\\((?P<heap_max_bytes>[0-9]+)\\\\)\" | unwrap heap_max_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "legendFormat": "Heap Max"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "id": 2,
+
+      "title": "Heap Usage %",
+
+      "type": "timeseries",
+
+      "gridPos": {
+
+        "x": 12,
+
+        "y": 0,
+
+        "w": 12,
+
+        "h": 8
+
+      },
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "percent"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "refId": "A",
+
+          "expr": "(max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?\\\\((?P<heap_used_bytes>[0-9]+)\\\\)\" | unwrap heap_used_bytes [30s]) / max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Heap\\\\[used=.*?max=.*?\\\\((?P<heap_max_bytes>[0-9]+)\\\\)\" | unwrap heap_max_bytes [30s])) * 100"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "id": 3,
+
+      "title": "Direct Memory Used vs Direct Max (GiB)",
+
+      "type": "timeseries",
+
+      "gridPos": {
+
+        "x": 0,
+
+        "y": 8,
+
+        "w": 12,
+
+        "h": 8
+
+      },
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "targets": [
+
+        {
+
+          "refId": "A",
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?\\\\((?P<direct_used_bytes>[0-9]+)\\\\)\" | unwrap direct_used_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "legendFormat": "Direct Used"
+
+        },
+
+        {
+
+          "refId": "B",
+
+          "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?max=.*?\\\\((?P<direct_max_bytes>[0-9]+)\\\\)\" | unwrap direct_max_bytes [30s]) / 1024 / 1024 / 1024",
+
+          "legendFormat": "Direct Max"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "id": 4,
+
+      "title": "Direct Memory Usage %",
+
+      "type": "timeseries",
+
+      "gridPos": {
+
+        "x": 12,
+
+        "y": 8,
+
+        "w": 12,
+
+        "h": 8
+
+      },
+
+      "datasource": {
+
+        "type": "loki",
+
+        "uid": "${DS_LOKI}"
+
+      },
+
+      "fieldConfig": {
+
+        "defaults": {
+
+          "unit": "percent"
+
+        }
+
+      },
+
+      "targets": [
+
+        {
+
+          "refId": "A",
+
+          "expr": "(max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?\\\\((?P<direct_used_bytes>[0-9]+)\\\\)\" | unwrap direct_used_bytes [30s]) / max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Direct\\\\[used=.*?max=.*?\\\\((?P<direct_max_bytes>[0-9]+)\\\\)\" | unwrap direct_max_bytes [30s])) * 100"
+
+        }
+
+      ]
+
+    },{
+
+  "id": 5,
+
+  "title": "JVM Thread Count",
+
+  "type": "timeseries",
+
+  "gridPos": {
+
+    "x": 0,
+
+    "y": 16,
+
+    "w": 12,
+
+    "h": 8
+
+  },
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "targets": [
+
+    {
+
+      "refId": "A",
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Threads\\\\[count=(?P<thread_count>[0-9]+)\" | unwrap thread_count [30s])",
+
+      "legendFormat": "Thread Count"
+
+    }
+
+  ]
+
+},
+
+{
+
+  "id": 6,
+
+  "title": "Young GC Count",
+
+  "type": "timeseries",
+
+  "gridPos": {
+
+    "x": 12,
+
+    "y": 16,
+
+    "w": 12,
+
+    "h": 8
+
+  },
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "targets": [
+
+    {
+
+      "refId": "A",
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"Young Generation\\\\[count=(?P<young_gc_count>[0-9]+)\" | unwrap young_gc_count [30s])",
+
+      "legendFormat": "Young GC Count"
+
+    }
+
+  ]
+
+},
+
+{
+
+  "id": 7,
+
+  "title": "G1 Old GC Count",
+
+  "type": "timeseries",
+
+  "gridPos": {
+
+    "x": 0,
+
+    "y": 24,
+
+    "w": 12,
+
+    "h": 8
+
+  },
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "targets": [
+
+    {
+
+      "refId": "A",
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"G1 Old Generation\\\\[count=(?P<old_gc_count>[0-9]+)\" | unwrap old_gc_count [30s])",
+
+      "legendFormat": "G1 Old GC Count"
+
+    }
+
+  ]
+
+},
+
+{
+
+  "id": 8,
+
+  "title": "JVM Memory Report Availability",
+
+  "type": "stat",
+
+  "gridPos": {
+
+    "x": 12,
+
+    "y": 24,
+
+    "w": 12,
+
+    "h": 8
+
+  },
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "options": {
+
+    "reduceOptions": {
+
+      "calcs": [
+
+        "lastNotNull"
+
+      ],
+
+      "values": false
+
+    }
+
+  },
+
+  "targets": [
+
+    {
+
+      "refId": "A",
+
+      "expr": "count_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" [2m])"
+
+    }
+
+  ]
+
+},
+
+{
+
+  "id": 9,
+
+  "title": "G1 Concurrent GC Time (sec)",
+
+  "type": "timeseries",
+
+  "gridPos": {
+
+    "x": 0,
+
+    "y": 32,
+
+    "w": 12,
+
+    "h": 8
+
+  },
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "targets": [
+
+    {
+
+      "refId": "A",
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"G1 Concurrent GC\\\\[count=[0-9]+.*?time=(?P<g1_concurrent_gc_time>[0-9]+)s\" | unwrap g1_concurrent_gc_time [30s])",
+
+      "legendFormat": "G1 Concurrent GC Time"
+
+    }
+
+  ]
+
+},
+
+{
+
+  "id": 10,
+
+  "title": "G1 Old Generation GC Time (sec)",
+
+  "type": "timeseries",
+
+  "gridPos": {
+
+    "x": 12,
+
+    "y": 32,
+
+    "w": 12,
+
+    "h": 8
+
+  },
+
+  "datasource": {
+
+    "type": "loki",
+
+    "uid": "${DS_LOKI}"
+
+  },
+
+  "targets": [
+
+    {
+
+      "refId": "A",
+
+      "expr": "max_over_time({sd1c_component=\"PRISM_SFT\",component=\"activepivot\",source=\"activepivot-main\",hostname=~\"$hostname\"} |= \"event_type=JvmMemoryReport\" | regexp \"G1 Old Generation\\\\[count=[0-9]+.*?time=(?P<old_gc_time>[0-9]+)s\" | unwrap old_gc_time [30s])",
+
+      "legendFormat": "G1 Old GC Time"
+
+    }
+
+  ]
+
+},
+
+{
+
+  "title": "JVM Memory Dashboard",
+
+  "schemaVersion": 39,
+
+  "version": 1,
+
+  "time": {
+
+    "from": "now-3h",
+
+    "to": "now"
+
+  },
+
+  "templating": {
+
+    "list": [
+
+      {
+
+        "name": "hostname",
+
+        "type": "query",
+
+        "datasource": {
+
+          "type": "loki",
+
+          "uid": "${DS_LOKI}"
+
+        },
+
+        "query": "label_values(hostname)",
+
+        "includeAll": true,
+
+        "multi": true,
+
+        "refresh": 1
+
+      }
+
+    ]
+
+  }
+
+}
